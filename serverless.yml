@@ -1,0 +1,31 @@
+org: reravi
+app: bob-metrics
+service: log-processor
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: 'us-east-1'
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            - cloudwatch:PutMetricData
+            - cloudwatch:*
+            - logs:*
+          Resource: "*"
+
+functions:
+  processLogs:
+    handler: bob_metric.lambda_handler
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements: {} 
